@@ -6,51 +6,50 @@ using UnityEngine.UI;
 
 public class RowCreator : MonoBehaviour
 {
-    public bool UseIconHeight;
-    public bool UseIconWidth;
+    //public bool UseIconSize;
 
-    public float IconHeight;
-    public float IconWidth;
+    //public float IconHeight;
+    //public float IconWidth;
     public Sprite[] Icons; //number of slots
 
-    //public float RowHeight;
-    //public float RowWidth;
-
-
-    private void Init()
-    {
-
-    }
+    public GameObject row;
+    public float Speed;
 
     private void Start()
     {
-        CreateHolderRow(IconHeight, IconWidth);
+        CreateHolderRow();
     }
 
-    private void CreateHolderRow(float rowHeight, float rowWidth)
+    private void Update()
     {
-        var row = new GameObject("Row", typeof(Image));
+        //row.GetComponent<RectTransform>().localPosition = new Vector2(0, 0.1f * Time.deltaTime);
+        //row.transform.localPosition = Vector2.Lerp(row.transform.localPosition, new Vector2(0, 100), Time.time);
+        
+    }
+
+    private void CreateHolderRow() 
+    {
+        row = new GameObject("Row", typeof(Image));
         row.GetComponent<Image>().enabled = false;
+
         row.transform.SetParent(transform);
-        //row.transform.localPosition = new Vector2(0,0);
-        //row.transform.localScale = new Vector2(rowHeight, rowWidth);
         row.GetComponent<RectTransform>().localPosition = new Vector2(0, 0);
-        row.GetComponent<RectTransform>().sizeDelta = new Vector2(rowWidth, rowHeight * Icons.Length);
-        CreateSlotHolders(row.transform);
+        row.GetComponent<RectTransform>().sizeDelta = new Vector2(100, 100 * Icons.Length); 
+
+        CreateSlotHolders(row.transform); 
     }
 
     private void CreateSlotHolders(Transform parent)
     {
         for (int i = 0; i < Icons.Length; i++)
         {
-            Sprite icon = Icons[i];
-            var iconHolder = new GameObject((i).ToString(), typeof(Image));
-
-            int iconNumber = i;
-            Vector2 iconSize;
+            var icon = Icons[i];
+            var iconSize = new Vector2(0,0);
+            var iconHolder = new GameObject(i.ToString(), typeof(Image));
 
             iconSize = iconHolder.GetComponent<RectTransform>().sizeDelta;
-            var offSet = -iconSize.y * iconNumber;
+
+            var offSet = -iconSize.y * i;
 
             iconHolder.transform.SetParent(parent);
             iconHolder.GetComponent<RectTransform>().localPosition = new Vector2(0, 0 + offSet);
@@ -58,6 +57,7 @@ public class RowCreator : MonoBehaviour
             iconHolder.GetComponent<RectTransform>().anchorMax = new Vector2(.5f, 1f);
             iconHolder.GetComponent<RectTransform>().pivot = new Vector2(.5f, 1f);
             iconHolder.GetComponent<Image>().sprite = icon;
+            iconHolder.GetComponent<Image>().preserveAspect = true;
         }
     }
 }
